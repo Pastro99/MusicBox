@@ -20,6 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.Color;
 import javax.swing.JTextPane;
 import javax.swing.JTextArea;
@@ -57,6 +58,10 @@ public class LyricsFinestra extends JFrame {
 		contentPane.add(scrollPane);
 		
 		textArea = new JTextArea();
+		textArea.setFont(new Font("Yu Gothic Light", Font.PLAIN, 15));
+		textArea.setForeground(Color.GRAY);
+		textArea.setMargin(new Insets(10, 10, 10, 10));
+		textArea.setLineWrap(true);
 		scrollPane.setViewportView(textArea);
 		
 		scrollPane_1 = new JScrollPane();
@@ -64,6 +69,10 @@ public class LyricsFinestra extends JFrame {
 		contentPane.add(scrollPane_1);
 		
 		textArea_1 = new JTextArea();
+		textArea_1.setForeground(Color.GRAY);
+		textArea_1.setFont(new Font("Yu Gothic Light", Font.PLAIN, 15));
+		textArea_1.setMargin(new Insets(10, 10, 10, 10));
+		textArea_1.setLineWrap(true);
 		scrollPane_1.setViewportView(textArea_1);
 		
 		lblOriginale = new JLabel("ORIGINALE");

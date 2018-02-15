@@ -1,16 +1,23 @@
 package model;
 
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+
+import javax.net.ssl.HttpsURLConnection;
+
+import org.json.JSONObject;;
 
 public class translate {
 
-	private static final String CLIENT_ID = "FREE_TRIAL_ACCOUNT";
-	  private static final String CLIENT_SECRET = "PUBLIC_SECRET";
-	  private static final String ENDPOINT = "http://api.whatsmate.net/v1/translation/translate";
+		private static final String SERVICE_URL = "https://translate.yandex.net/api/v1.5/tr.json/translate?";
+	  private static final String TRANSLATION_LABEL = "text";
+	  private static final String API_KEY="trnsl.1.1.20180215T133556Z.d49681c8c1eeac84.6bf90321f2604f2bbf83670823b610ea24caf5a9";
+	  private static final String ENCODING="UTF-8";
 	
 	
 	public translate() {
@@ -19,47 +26,36 @@ public class translate {
 	}
 	
 	
-	 public static String traduci(String fromLang, String toLang, String text) throws Exception {
-		    // TODO: Should have used a 3rd party library to make a JSON string from an object
-		    String jsonPayload = new StringBuilder()
-		      .append("{")
-		      .append("\"fromLang\":\"")
-		      .append(fromLang)
-		      .append("\",")
-		      .append("\"toLang\":\"")
-		      .append(toLang)
-		      .append("\",")
-		      .append("\"text\":\"")
-		      .append(text)
-		      .append("\"")
-		      .append("}")
-		      .toString();
-
-		    URL url = new URL(ENDPOINT);
-		    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		    conn.setDoOutput(true);
-		    conn.setRequestMethod("POST");
-		    conn.setRequestProperty("X-WM-CLIENT-ID", CLIENT_ID);
-		    conn.setRequestProperty("X-WM-CLIENT-SECRET", CLIENT_SECRET);
-		    conn.setRequestProperty("Content-Type", "application/json");
-
-		    OutputStream os = conn.getOutputStream();
-		    os.write(jsonPayload.getBytes());
-		    os.flush();
-		    os.close();
-
-		    int statusCode = conn.getResponseCode();
-		    BufferedReader br = new BufferedReader(new InputStreamReader(
-		        (statusCode == 200) ? conn.getInputStream() : conn.getErrorStream()
-		      ));
-		    String output=br.toString();
-		    String ris="";
-		    while ((output = br.readLine()) != null) {
-		        ris=output+"\n";
-		    }
-		    conn.disconnect();
-		    System.out.println(ris);
-		    return ris.replaceAll("\\|", "\n");
-		  }
+	public static String traduci(String from, String to, String text) throws Exception {
+		String params =
+				"key="+URLEncoder.encode(API_KEY,ENCODING)+
+				"&text="+URLEncoder.encode(text,ENCODING)+
+				"&lang="+URLEncoder.encode(from+"-"+to,ENCODING);
+		System.out.println(SERVICE_URL+params);
+				
+		URL obj = new URL(SERVICE_URL+params);
+		HttpURLConnection con = (HttpsURLConnection) obj.openConnection();	   
+		con.addRequestProperty("User-Agent", "Mozilla");
+		System.out.println(con.getResponseCode());
+		if(200==con.getResponseCode()) {
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+		     String inputLine;
+		     StringBuffer response = new StringBuffer();
+		     while ((inputLine = in.readLine()) != null) {
+		      	response.append(inputLine);
+		      }
+		     in.close();
+		     inputLine=response.toString();
+		     inputLine=inputLine.replace(":[", ":");
+		     inputLine=inputLine.replace("]}", "}");
+		     System.out.println(inputLine);
+		     JSONObject risposta = new JSONObject(inputLine);
+		     
+		     return URLDecoder.decode(risposta.getString("text"), ENCODING).replaceAll("\\|", "\n");
+		}
+		return "fail";
+	 }
 	
 }
+
+

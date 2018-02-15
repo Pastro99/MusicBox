@@ -27,6 +27,7 @@ public class Main {
 	    
 	    MouseControl mousecontrol = new MouseControl(keyevent);
 	    
+	    translate.traduci("it","en", "ciao, come stai?");
 	  
 	}
 
