@@ -50,8 +50,12 @@ public class translate {
 		     inputLine=inputLine.replace("]}", "}");
 		     System.out.println(inputLine);
 		     JSONObject risposta = new JSONObject(inputLine);
-		     
-		     return URLDecoder.decode(risposta.getString("text"), ENCODING).replaceAll("\\|", "\n");
+		     inputLine=risposta.getString("text");
+		     inputLine=inputLine.replaceAll("\\ì", "i");
+		     inputLine=inputLine.replaceAll("\\è", "e");
+		     inputLine=inputLine.replaceAll("\\ù", "u");
+		     inputLine=inputLine.replaceAll("\\�", "a");
+		     return inputLine.replaceAll("\\|", "\n");
 		}
 		return "fail";
 	 }
